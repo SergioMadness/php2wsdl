@@ -14,11 +14,11 @@ class PHPClass2WSDL
 {
 
     /**
-     * The class to transform.
+     * Classes to transform.
      *
-     * @var string
+     * @var array
      */
-    protected $class;
+    protected $classes = [];
 
     /**
      * The URL of the web service.
@@ -26,6 +26,13 @@ class PHPClass2WSDL
      * @var string
      */
     protected $uri;
+
+    /**
+     * Name
+     *
+     * @var string
+     */
+    protected $name;
 
     /**
      * The URI to the stylesheet file.
@@ -46,45 +53,62 @@ class PHPClass2WSDL
      *
      * @var array
      */
-    protected $bindingStyle = array(
-        'style' => 'rpc',
-        'transport' => 'http://schemas.xmlsoap.org/soap/http'
-    );
+    protected $bindingStyle = [
+        'style'     => 'rpc',
+        'transport' => 'http://schemas.xmlsoap.org/soap/http',
+    ];
 
     /**
      * The soap:body operation style options.
      *
      * @var array
      */
-    protected $operationBodyStyle = array(
-        'use' => 'encoded',
-        'encodingStyle' => 'http://schemas.xmlsoap.org/soap/encoding/'
-    );
+    protected $operationBodyStyle = [
+        'use'           => 'encoded',
+        'encodingStyle' => 'http://schemas.xmlsoap.org/soap/encoding/',
+    ];
 
     /**
      * Constructor.
      *
-     * @param mixed $class The class name from which to generate the WSDL.
-     * @param string $uri The web service URL.
+     * @param mixed  $class The class name from which to generate the WSDL.
+     * @param string $uri   The web service URL.
+     *
      * @throws InvalidArgumentException If the class is not valid or not an object.
      */
-    public function __construct($class, $uri)
+    public function __construct($class, $uri, $name)
+    {
+        $this->addClass($class);
+
+        $this->uri = $uri;
+        $this->name = $name;
+    }
+
+    /**
+     * Add class
+     *
+     * @param $class
+     *
+     * @return $this
+     */
+    public function addClass($class)
     {
         if (is_string($class) && class_exists($class)) {
-            $this->class = $class;
+            $this->classes[] = $class;
         } elseif (is_object($class)) {
-            $this->class = get_class($class);
+            $this->classes[] = get_class($class);
         } else {
             throw new InvalidArgumentException('Invalid class name or object to generate the WSDL for.');
         }
 
-        $this->uri = $uri;
+        return $this;
     }
 
     /**
      * Set the stylesheet for the WSDL.
      *
      * @param string $xslUri The URI to the stylesheet.
+     *
      * @return PHPClass2WSDL
      */
     public function setStylesheet($xslUri)
@@ -97,8 +121,9 @@ class PHPClass2WSDL
     /**
      * Set the binding style.
      *
-     * @param string $style The style (rpc or document).
+     * @param string $style     The style (rpc or document).
      * @param string $transport The transport.
+     *
      * @return PHPClass2WSDL
      */
     public function setBindingStyle($style, $transport)
@@ -113,45 +138,71 @@ class PHPClass2WSDL
      * Generate the WSDL DOMDocument.
      *
      * @param boolean $withAnnotation Flag if only the methods with '@soap' annotation should be added.
+     *
+     * @return $this
      */
-    public function generateWSDL($withAnnotation = false)
+    public function generateWSDL()
     {
-        $qNameClassName = WSDL::typeToQName($this->class);
+        $this->wsdl = new WSDL($this->name, $this->uri, $this->xslUri);
+        foreach ($this->classes as $class) {
+            $this->generateWSDLClass($class);
+        }
 
-        $this->wsdl = new WSDL($qNameClassName, $this->uri, $this->xslUri);
+        return $this;
+    }
 
-        $port = $this->wsdl->addPortType($qNameClassName . 'Port');
-        $binding = $this->wsdl->addBinding($qNameClassName . 'Binding', 'tns:' . $qNameClassName . 'Port');
+    /**
+     * Generate for single class
+     *
+     * @param      $class
+     *
+     * @return $this
+     */
+    public function generateWSDLClass($class)
+    {
+        $ref = new ReflectionClass($class);
+        $docs = $ref->getReflectionDocComment()->getAnnotationsCollection();
+        if ($docs->hasAnnotationTag('soap')) {
+            $name = $docs->hasAnnotationTag('soapName') ? $docs->getAnnotation('soapName')[0]->getDescription() : WSDL::typeToQName($class);
 
-        $this->wsdl->addSoapBinding($binding, $this->bindingStyle['style'], $this->bindingStyle['transport']);
-        $this->wsdl->addService(
-            $qNameClassName . 'Service', $qNameClassName . 'Port',
-            'tns:' . $qNameClassName . 'Binding',
-            $this->uri
-        );
+            $port = $this->wsdl->addPortType($name . 'Port');
+            $binding = $this->wsdl->addBinding($name . 'Binding', 'tns:' . $name . 'Port');
 
-        $ref = new ReflectionClass($this->class);
-        foreach ($ref->getMethods() as $method) {
-            if ($withAnnotation === false || $method->getReflectionDocComment()->getAnnotationsCollection()->hasAnnotationTag('soap')) {
-                $this->addMethodToWsdl($method, $port, $binding);
+            $this->wsdl->addSoapBinding($binding, $this->bindingStyle['style'], $this->bindingStyle['transport']);
+
+            foreach ($ref->getMethods() as $method) {
+                $annotations = $method->getReflectionDocComment()->getAnnotationsCollection();
+                if ($annotations->hasAnnotationTag('soap')) {
+                    $serviceName = $annotations->hasAnnotationTag('soapName') ? $annotations->getAnnotation('soapName')[0]->getDescription() : WSDL::typeToQName($method->getName());
+                    $uri = $annotations->hasAnnotationTag('soapUri') ? $annotations->getAnnotation('soapUri')[0]->getDescription() : $this->uri;
+                    $this->wsdl->addService(
+                        $serviceName . 'Service', $serviceName . 'Port',
+                        'tns:' . $serviceName . 'Binding',
+                        $uri
+                    );
+                    $this->addMethodToWsdl($method, $port, $binding);
+                }
             }
         }
+
+        return $this;
     }
 
     /**
      * Add a method to the WSDL.
      *
-     * @param ReflectionMethod $method The reflection of the method to add.
-     * @param DOMElement $port The portType element.
-     * @param DOMElement $binding The binding element.
+     * @param ReflectionMethod $method  The reflection of the method to add.
+     * @param DOMElement       $port    The portType element.
+     * @param DOMElement       $binding The binding element.
      */
     protected function addMethodToWsdl(ReflectionMethod $method, DOMElement $port, DOMElement $binding)
     {
-        $qNameMethodName = WSDL::typeToQName($method->getName());
-
-        $args = array();
-        $annotations = array();
+        $args = [];
+        $annotations = [];
         $methodAnnotationsCollection = $method->getReflectionDocComment()->getAnnotationsCollection();
+
+        $qNameMethodName = $methodAnnotationsCollection->hasAnnotationTag('soapName') ? $methodAnnotationsCollection->getAnnotation('soapName')[0]->getDescription() : WSDL::typeToQName($method->getName());
+
         if ($methodAnnotationsCollection->hasAnnotationTag('param')) {
             /** @var \Wingu\OctopusCore\Reflection\Annotation\Tags\ParamTag $param */
             foreach ($methodAnnotationsCollection->getAnnotation('param') as $param) {
@@ -160,7 +211,7 @@ class PHPClass2WSDL
         }
 
         if ($this->bindingStyle['style'] === 'document') {
-            $sequence = array();
+            $sequence = [];
             /** @var \Wingu\OctopusCore\Reflection\ReflectionParameter $param */
             foreach ($method->getParameters() as $param) {
                 $type = 'anytype';
@@ -168,7 +219,7 @@ class PHPClass2WSDL
                     $type = $annotations['$' . $param->getName()]->getParamType();
                 }
 
-                $sequenceElement = array('name' => $param->getName(), 'type' => $this->wsdl->getXSDType($type));
+                $sequenceElement = ['name' => $param->getName(), 'type' => $this->wsdl->getXSDType($type)];
                 if ($param->isOptional()) {
                     $sequenceElement['nillable'] = 'true';
                 }
@@ -176,8 +227,8 @@ class PHPClass2WSDL
                 $sequence[] = $sequenceElement;
             }
 
-            $element = array('name' => $qNameMethodName, 'sequence' => $sequence);
-            $args['parameters'] = array('element' => $this->wsdl->addElement($element));
+            $element = ['name' => $qNameMethodName, 'sequence' => $sequence];
+            $args['parameters'] = ['element' => $this->wsdl->addElement($element)];
         } else {
             /** @var \Wingu\OctopusCore\Reflection\ReflectionParameter $param */
             foreach ($method->getParameters() as $param) {
@@ -186,7 +237,7 @@ class PHPClass2WSDL
                     $type = $annotations['$' . $param->getName()]->getParamType();
                 }
 
-                $args[$param->getName()] = array('type' => $this->wsdl->getXSDType($type));
+                $args[$param->getName()] = ['type' => $this->wsdl->getXSDType($type)];
             }
         }
 
@@ -202,20 +253,20 @@ class PHPClass2WSDL
         $isOneWayMessage = ($returnType === null);
 
         if ($isOneWayMessage === false) {
-            $args = array();
+            $args = [];
             if ($this->bindingStyle['style'] === 'document') {
-                $sequence = array();
+                $sequence = [];
                 if ($returnType !== null) {
-                    $sequence[] = array(
+                    $sequence[] = [
                         'name' => $qNameMethodName . 'Result',
-                        'type' => $this->wsdl->getXSDType($returnType)
-                    );
+                        'type' => $this->wsdl->getXSDType($returnType),
+                    ];
                 }
 
-                $element = array('name' => $qNameMethodName . 'Response', 'sequence' => $sequence);
-                $args['parameters'] = array('element' => $this->wsdl->addElement($element));
+                $element = ['name' => $qNameMethodName . 'Response', 'sequence' => $sequence];
+                $args['parameters'] = ['element' => $this->wsdl->addElement($element)];
             } elseif ($returnType !== null) {
-                $args['return'] = array('type' => $this->wsdl->getXSDType($returnType));
+                $args['return'] = ['type' => $this->wsdl->getXSDType($returnType)];
             }
 
             $this->wsdl->addMessage($qNameMethodName . 'Out', $args);
