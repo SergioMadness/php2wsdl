@@ -163,17 +163,16 @@ class PHPClass2WSDL
         $ref = new ReflectionClass($class);
         $docs = $ref->getReflectionDocComment()->getAnnotationsCollection();
         if ($docs->hasAnnotationTag('soap')) {
-            $name = $docs->hasAnnotationTag('soapName') ? $docs->getAnnotation('soapName')[0]->getDescription() : WSDL::typeToQName($class);
-
-            $port = $this->wsdl->addPortType($name . 'Port');
-            $binding = $this->wsdl->addBinding($name . 'Binding', 'tns:' . $name . 'Port');
-
-            $this->wsdl->addSoapBinding($binding, $this->bindingStyle['style'], $this->bindingStyle['transport']);
-
             foreach ($ref->getMethods() as $method) {
                 $annotations = $method->getReflectionDocComment()->getAnnotationsCollection();
                 if ($annotations->hasAnnotationTag('soap')) {
                     $serviceName = $annotations->hasAnnotationTag('soapName') ? $annotations->getAnnotation('soapName')[0]->getDescription() : WSDL::typeToQName($method->getName());
+
+                    $port = $this->wsdl->addPortType($serviceName . 'Port');
+                    $binding = $this->wsdl->addBinding($serviceName . 'Binding', 'tns:' . $serviceName . 'Port');
+
+                    $this->wsdl->addSoapBinding($binding, $this->bindingStyle['style'], $this->bindingStyle['transport']);
+
                     $uri = $annotations->hasAnnotationTag('soapUri') ? $annotations->getAnnotation('soapUri')[0]->getDescription() : $this->uri;
                     $this->wsdl->addService(
                         $serviceName . 'Service', $serviceName . 'Port',
@@ -203,41 +202,24 @@ class PHPClass2WSDL
 
         $qNameMethodName = $methodAnnotationsCollection->hasAnnotationTag('soapName') ? $methodAnnotationsCollection->getAnnotation('soapName')[0]->getDescription() : WSDL::typeToQName($method->getName());
 
-        if ($methodAnnotationsCollection->hasAnnotationTag('param')) {
-            /** @var \Wingu\OctopusCore\Reflection\Annotation\Tags\ParamTag $param */
-            foreach ($methodAnnotationsCollection->getAnnotation('param') as $param) {
-                $annotations[$param->getParamName()] = $param;
-            }
-        }
+        if ($methodAnnotationsCollection->hasAnnotationTag('soapParam')) {
+            /** @var \Wingu\OctopusCore\Reflection\Annotation\Tags\BaseTag $param */
+            foreach ($methodAnnotationsCollection->getAnnotation('soapParam') as $param) {
+                $paramInfo = $this->parseSoapParam($param->getDescription());
+                $annotations[$paramInfo['name']] = $paramInfo['type'];
 
-        if ($this->bindingStyle['style'] === 'document') {
-            $sequence = [];
-            /** @var \Wingu\OctopusCore\Reflection\ReflectionParameter $param */
-            foreach ($method->getParameters() as $param) {
-                $type = 'anytype';
-                if (isset($annotations['$' . $param->getName()])) {
-                    $type = $annotations['$' . $param->getName()]->getParamType();
+                if ($this->bindingStyle['style'] === 'document') {
+                    $sequenceElement = ['name' => $paramInfo['name'], 'type' => $this->wsdl->getXSDType($paramInfo['type'])];
+                    if ($paramInfo['isOptional']) {
+                        $sequenceElement['nillable'] = 'true';
+                    }
+
+                    $sequence[] = $sequenceElement;
+                    $element = ['name' => $qNameMethodName, 'sequence' => $sequence];
+                    $args['parameters'] = ['element' => $this->wsdl->addElement($element)];
+                } else {
+                    $args[$paramInfo['name']] = ['type' => $this->wsdl->getXSDType($paramInfo['type'])];
                 }
-
-                $sequenceElement = ['name' => $param->getName(), 'type' => $this->wsdl->getXSDType($type)];
-                if ($param->isOptional()) {
-                    $sequenceElement['nillable'] = 'true';
-                }
-
-                $sequence[] = $sequenceElement;
-            }
-
-            $element = ['name' => $qNameMethodName, 'sequence' => $sequence];
-            $args['parameters'] = ['element' => $this->wsdl->addElement($element)];
-        } else {
-            /** @var \Wingu\OctopusCore\Reflection\ReflectionParameter $param */
-            foreach ($method->getParameters() as $param) {
-                $type = 'anytype';
-                if (isset($annotations['$' . $param->getName()])) {
-                    $type = $annotations['$' . $param->getName()]->getParamType();
-                }
-
-                $args[$param->getName()] = ['type' => $this->wsdl->getXSDType($type)];
             }
         }
 
@@ -313,5 +295,24 @@ class PHPClass2WSDL
     public function dump()
     {
         return $this->wsdl->dump();
+    }
+
+    /**
+     * Parse SoapParam description
+     *
+     * @param string $description
+     *
+     * @return array
+     */
+    public function parseSoapParam($description)
+    {
+        $parts = explode(' ', trim(preg_replace('/\s{2,}/', ' ', $description)));
+        $result = [
+            'type'       => trim($parts[0]),
+            'name'       => trim($parts[1]),
+            'isOptional' => trim($parts[count($parts) - 1]) === 'optional',
+        ];
+
+        return $result;
     }
 }
