@@ -1,5 +1,5 @@
 {
-    "name": "php2wsdl/php2wsdl",
+    "name": "professionalweb/php2wsdl",
     "description": "Create WSDL files form PHP classes.",
     "type": "library",
     "keywords": [
