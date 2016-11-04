@@ -78,7 +78,9 @@ class PHPClass2WSDL
      */
     public function __construct($class, $uri, $name)
     {
-        $this->addClass($class);
+        if ($class != '') {
+            $this->addClass($class);
+        }
 
         $this->uri = $uri;
         $this->name = $name;
