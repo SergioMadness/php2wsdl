@@ -228,10 +228,10 @@ class PHPClass2WSDL
         $this->wsdl->addMessage($qNameMethodName . 'In', $args);
 
         $returnType = null;
-        if ($methodAnnotationsCollection->hasAnnotationTag('return') === true) {
-            $annotation = $methodAnnotationsCollection->getAnnotation('return');
+        if ($methodAnnotationsCollection->hasAnnotationTag('soapReturn') === true) {
+            $annotation = $methodAnnotationsCollection->getAnnotation('soapReturn');
             $annotation = reset($annotation);
-            $returnType = $annotation->getReturnType();
+            $returnType = $annotation->getDescription();
         }
 
         $isOneWayMessage = ($returnType === null);
