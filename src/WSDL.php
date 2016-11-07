@@ -46,32 +46,33 @@ class WSDL
      *
      * @var array
      */
-    protected static $XSDTypes = array(
-        'string' => 'xsd:string',
-        'bool' => 'xsd:boolean',
-        'boolean' => 'xsd:boolean',
-        'int' => 'xsd:int',
-        'integer' => 'xsd:int',
-        'double' => 'xsd:float',
-        'float' => 'xsd:float',
-        'decimal' => 'xsd:decimal',
-        'array' => 'soap-enc:Array',
-        'time' => 'xsd:time',
-        'date' => 'xsd:date',
-        'datetime' => 'xsd:dateTime',
-        'anytype' => 'xsd:anyType',
+    protected static $XSDTypes = [
+        'string'       => 'xsd:string',
+        'bool'         => 'xsd:boolean',
+        'boolean'      => 'xsd:boolean',
+        'int'          => 'xsd:int',
+        'integer'      => 'xsd:int',
+        'double'       => 'xsd:float',
+        'float'        => 'xsd:float',
+        'decimal'      => 'xsd:decimal',
+        'array'        => 'soap-enc:Array',
+        'time'         => 'xsd:time',
+        'date'         => 'xsd:date',
+        'datetime'     => 'xsd:dateTime',
+        'anytype'      => 'xsd:anyType',
         'unknown_type' => 'xsd:anyType',
-        'mixed' => 'xsd:anyType',
-        'object' => 'xsd:struct',
-        'base64binary' => 'xsd:base64Binary'
-    );
+        'mixed'        => 'xsd:anyType',
+        'object'       => 'xsd:struct',
+        'base64binary' => 'xsd:base64Binary',
+    ];
 
     /**
      * Constructor.
      *
-     * @param string $name The name of the web service.
-     * @param string $uri URI where the WSDL will be available.
+     * @param string $name   The name of the web service.
+     * @param string $uri    URI where the WSDL will be available.
      * @param string $xslUri The URI to the stylesheet.
+     *
      * @throws RuntimeException If the DOM Document can not be created.
      */
     public function __construct($name, $uri, $xslUri = null)
@@ -110,6 +111,7 @@ class WSDL
      * Set the stylesheet for the WSDL.
      *
      * @param string $xslUri The URI to the stylesheet.
+     *
      * @return WSDL
      */
     private function setStylesheet($xslUri)
@@ -121,8 +123,9 @@ class WSDL
     /**
      * Add a message element to the WSDL.
      *
-     * @param string $name The name for the message.
-     * @param array $parts Array of parts for the message ('name'=>'type' or 'name'=>array('type'=>'type', 'element'=>'element')).
+     * @param string $name  The name for the message.
+     * @param array  $parts Array of parts for the message ('name'=>'type' or 'name'=>array('type'=>'type', 'element'=>'element')).
+     *
      * @return DOMElement
      * @link http://www.w3.org/TR/wsdl#_messages
      */
@@ -154,6 +157,7 @@ class WSDL
      * Add a portType to element to the WSDL.
      *
      * @param string $name The name of the portType.
+     *
      * @return DOMElement
      */
     public function addPortType($name)
@@ -168,8 +172,9 @@ class WSDL
     /**
      * Add a binding element to the WSDL.
      *
-     * @param string $name The name of the binding.
+     * @param string $name     The name of the binding.
      * @param string $portType The portType to bind.
+     *
      * @return DOMElement
      */
     public function addBinding($name, $portType)
@@ -186,9 +191,10 @@ class WSDL
     /**
      * Add a SOAP binding element to the Binding element.
      *
-     * @param DOMElement $binding The binding element (from addBinding() method).
-     * @param string $style The binding style (rpc or document).
-     * @param string $transport The transport method.
+     * @param DOMElement $binding   The binding element (from addBinding() method).
+     * @param string     $style     The binding style (rpc or document).
+     * @param string     $transport The transport method.
+     *
      * @return DOMElement
      * @link http://www.w3.org/TR/wsdl#_soap:binding
      */
@@ -196,7 +202,8 @@ class WSDL
         DOMElement $binding,
         $style = 'rpc',
         $transport = 'http://schemas.xmlsoap.org/soap/http'
-    ) {
+    )
+    {
         $soapBinding = $this->dom->createElement('soap:binding');
         $soapBinding->setAttribute('style', $style);
         $soapBinding->setAttribute('transport', $transport);
@@ -210,13 +217,22 @@ class WSDL
      * Add an operation to a binding element.
      *
      * @param DOMElement $binding The binding element (from addBinding() method).
-     * @param string $name The name of the operation.
-     * @param array $input Attributes for the input element (use, namespace, encodingStyle).
-     * @param array $output Attributes for the output element (use, namespace, encodingStyle).
+     * @param string     $name    The name of the operation.
+     * @param array      $input   Attributes for the input element (use, namespace, encodingStyle).
+     * @param array      $output  Attributes for the output element (use, namespace, encodingStyle).
+     * @param array      $inputHeaders
+     * @param array      $outputHeaders
+     *
      * @return DOMElement
-     * @link http://www.w3.org/TR/wsdl#_soap:body
+     *
+     * @link     http://www.w3.org/TR/wsdl#_soap:body
      */
-    public function addBindingOperation(DOMElement $binding, $name, array $input = null, array $output = null)
+    public function addBindingOperation(DOMElement $binding,
+                                        $name,
+                                        array $input = null,
+                                        array $output = null,
+                                        array $inputHeaders = null,
+                                        array $outputHeaders = null)
     {
         $operation = $this->dom->createElement('operation');
         $operation->setAttribute('name', $name);
@@ -230,6 +246,14 @@ class WSDL
 
             $inputElement->appendChild($soapElement);
             $operation->appendChild($inputElement);
+
+            if (is_array($inputHeaders)) {
+                $inputHeadersElement = $this->dom->createElement('soap:header');
+                foreach ($inputHeaders as $name => $value) {
+                    $inputHeadersElement->setAttribute($name, $value);
+                }
+                $operation->appendChild($inputHeadersElement);
+            }
         }
 
         if (is_array($output)) {
@@ -241,6 +265,14 @@ class WSDL
 
             $outputElement->appendChild($soapElement);
             $operation->appendChild($outputElement);
+
+            if(is_array($outputHeaders)) {
+                $outputHeadersElement = $this->dom->createElement('soap:header');
+                foreach ($outputHeaders as $name => $value) {
+                    $outputHeadersElement->setAttribute($name, $value);
+                }
+                $operation->appendChild($outputHeadersElement);
+            }
         }
 
         $binding->appendChild($operation);
@@ -251,10 +283,11 @@ class WSDL
     /**
      * Add an operation element to a portType element.
      *
-     * @param DOMElement $portType The port type element (from addPortType() method).
-     * @param string $name The name of the operation.
-     * @param string $inputMessage The input message.
-     * @param string $outputMessage The output message.
+     * @param DOMElement $portType      The port type element (from addPortType() method).
+     * @param string     $name          The name of the operation.
+     * @param string     $inputMessage  The input message.
+     * @param string     $outputMessage The output message.
+     *
      * @return DOMElement
      * @link http://www.w3.org/TR/wsdl#_request-response
      */
@@ -283,8 +316,9 @@ class WSDL
     /**
      * Add a SOAP operation to an operation element.
      *
-     * @param DOMElement $binding The binding element (from addBindingOperation() method).
-     * @param string $soapAction SOAP Action.
+     * @param DOMElement $binding    The binding element (from addBindingOperation() method).
+     * @param string     $soapAction SOAP Action.
+     *
      * @return DOMElement
      * @link http://www.w3.org/TR/wsdl#_soap:operation
      */
@@ -301,10 +335,11 @@ class WSDL
     /**
      * Add a service element to the WSDL.
      *
-     * @param string $name Service name.
+     * @param string $name     Service name.
      * @param string $portName Port name.
-     * @param string $binding Binding for the port.
+     * @param string $binding  Binding for the port.
      * @param string $location SOAP Address location.
+     *
      * @return DOMElement
      * @link http://www.w3.org/TR/wsdl#_services
      */
@@ -331,8 +366,9 @@ class WSDL
     /**
      * Add a documentation element to another element in the WSDL.
      *
-     * @param DOMElement $inputElement The DOMElement element to add the documentation.
-     * @param string $documentation The documentation text.
+     * @param DOMElement $inputElement  The DOMElement element to add the documentation.
+     * @param string     $documentation The documentation text.
+     *
      * @return DOMElement
      * @link http://www.w3.org/TR/wsdl#_documentation
      */
@@ -360,7 +396,7 @@ class WSDL
     /**
      * Add a complex type.
      *
-     * @param string $type The type.
+     * @param string $type     The type.
      * @param string $wsdlType The WSDL type.
      */
     public function addType($type, $wsdlType)
@@ -372,6 +408,7 @@ class WSDL
      * Get the XSD Type from a PHP type.
      *
      * @param string $type The type to get the XSD type from.
+     *
      * @return string
      */
     public function getXSDType($type)
@@ -395,11 +432,13 @@ class WSDL
      * Check if a type is a XDS.
      *
      * @param string $type The type to check.
+     *
      * @return boolean
      */
     private function isXDSType($type)
     {
         $typeToLowerString = strtolower($type);
+
         return isset(self::$XSDTypes[$typeToLowerString]);
     }
 
@@ -407,6 +446,7 @@ class WSDL
      * Add a complex type.
      *
      * @param string $type Name of the class.
+     *
      * @return string
      */
     public function addComplexType($type)
@@ -468,7 +508,8 @@ class WSDL
      * Add an array of complex type.
      *
      * @param string $singularType The type name without the '[]'.
-     * @param string $type The original type name.
+     * @param string $type         The original type name.
+     *
      * @return string
      */
     protected function addComplexTypeArray($singularType, $type)
@@ -507,13 +548,14 @@ class WSDL
      * Parse an xsd:element represented as an array into a DOMElement.
      *
      * @param array $element An xsd:element represented as an array.
+     *
      * @return DOMElement
      */
     private function parseElement(array $element)
     {
         $elementXml = $this->dom->createElement('xsd:element');
         foreach ($element as $key => $value) {
-            if (in_array($key, array('sequence', 'all', 'choice'))) {
+            if (in_array($key, ['sequence', 'all', 'choice'])) {
                 if (is_array($value)) {
                     $complexType = $this->dom->createElement('xsd:complexType');
                     if (count($value) > 0) {
@@ -540,12 +582,14 @@ class WSDL
      * Add an xsd:element represented as an array to the schema.
      *
      * @param array $element An xsd:element represented as an array.
+     *
      * @return string
      */
     public function addElement(array $element)
     {
         $elementXml = $this->parseElement($element);
         $this->schema->appendChild($elementXml);
+
         return 'tns:' . $element['name'];
     }
 
@@ -557,6 +601,7 @@ class WSDL
     public function dump()
     {
         $this->dom->formatOutput = true;
+
         return $this->dom->saveXML();
     }
 
@@ -564,6 +609,7 @@ class WSDL
      * Convert a PHP type into QName.
      *
      * @param string $type The PHP type.
+     *
      * @return string
      */
     public static function typeToQName($type)
@@ -579,6 +625,7 @@ class WSDL
      * Changes the xs:all to an xs:sequence node
      *
      * @param \DOMElement $all
+     *
      * @return \DOMElement
      */
     private function changeAllToSequence($all)
@@ -595,6 +642,7 @@ class WSDL
         while ($all->firstChild) {
             $sequence->appendChild($all->firstChild);
         }
+
         return $sequence;
     }
 

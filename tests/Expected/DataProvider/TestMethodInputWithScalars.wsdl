@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="localhost" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputWithScalars" targetNamespace="localhost">
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="localhost" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="test" targetNamespace="localhost">
   <types>
     <xsd:schema targetNamespace="localhost">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -8,30 +8,12 @@
       </xsd:complexType>
     </xsd:schema>
   </types>
-  <portType name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputWithScalarsPort">
+  <portType name="inputStringPort">
     <operation name="inputString">
       <input message="tns:inputStringIn"/>
     </operation>
-    <operation name="inputBoolean">
-      <input message="tns:inputBooleanIn"/>
-    </operation>
-    <operation name="inputInteger">
-      <input message="tns:inputIntegerIn"/>
-    </operation>
-    <operation name="inputDouble">
-      <input message="tns:inputDoubleIn"/>
-    </operation>
-    <operation name="inputFloat">
-      <input message="tns:inputFloatIn"/>
-    </operation>
-    <operation name="inputDecimal">
-      <input message="tns:inputDecimalIn"/>
-    </operation>
-    <operation name="inputTime">
-      <input message="tns:inputTimeIn"/>
-    </operation>
   </portType>
-  <binding name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputWithScalarsBinding" type="tns:PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputWithScalarsPort">
+  <binding name="inputStringBinding" type="tns:inputStringPort">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputString">
       <soap:operation soapAction="localhost#inputString"/>
@@ -42,6 +24,22 @@
         <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
       </output>
     </operation>
+  </binding>
+  <service name="inputStringService">
+    <port name="inputStringPort" binding="tns:inputStringBinding">
+      <soap:address location="localhost"/>
+    </port>
+  </service>
+  <message name="inputStringIn">
+    <part name="input" type="xsd:string"/>
+  </message>
+  <portType name="inputBooleanPort">
+    <operation name="inputBoolean">
+      <input message="tns:inputBooleanIn"/>
+    </operation>
+  </portType>
+  <binding name="inputBooleanBinding" type="tns:inputBooleanPort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputBoolean">
       <soap:operation soapAction="localhost#inputBoolean"/>
       <input>
@@ -51,6 +49,23 @@
         <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
       </output>
     </operation>
+  </binding>
+  <service name="inputBooleanService">
+    <port name="inputBooleanPort" binding="tns:inputBooleanBinding">
+      <soap:address location="localhost"/>
+    </port>
+  </service>
+  <message name="inputBooleanIn">
+    <part name="input1" type="xsd:boolean"/>
+    <part name="input2" type="xsd:boolean"/>
+  </message>
+  <portType name="inputIntegerPort">
+    <operation name="inputInteger">
+      <input message="tns:inputIntegerIn"/>
+    </operation>
+  </portType>
+  <binding name="inputIntegerBinding" type="tns:inputIntegerPort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputInteger">
       <soap:operation soapAction="localhost#inputInteger"/>
       <input>
@@ -60,6 +75,23 @@
         <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
       </output>
     </operation>
+  </binding>
+  <service name="inputIntegerService">
+    <port name="inputIntegerPort" binding="tns:inputIntegerBinding">
+      <soap:address location="localhost"/>
+    </port>
+  </service>
+  <message name="inputIntegerIn">
+    <part name="input1" type="xsd:int"/>
+    <part name="input2" type="xsd:int"/>
+  </message>
+  <portType name="inputDoublePort">
+    <operation name="inputDouble">
+      <input message="tns:inputDoubleIn"/>
+    </operation>
+  </portType>
+  <binding name="inputDoubleBinding" type="tns:inputDoublePort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputDouble">
       <soap:operation soapAction="localhost#inputDouble"/>
       <input>
@@ -69,6 +101,22 @@
         <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
       </output>
     </operation>
+  </binding>
+  <service name="inputDoubleService">
+    <port name="inputDoublePort" binding="tns:inputDoubleBinding">
+      <soap:address location="localhost"/>
+    </port>
+  </service>
+  <message name="inputDoubleIn">
+    <part name="input" type="xsd:float"/>
+  </message>
+  <portType name="inputFloatPort">
+    <operation name="inputFloat">
+      <input message="tns:inputFloatIn"/>
+    </operation>
+  </portType>
+  <binding name="inputFloatBinding" type="tns:inputFloatPort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputFloat">
       <soap:operation soapAction="localhost#inputFloat"/>
       <input>
@@ -78,6 +126,22 @@
         <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
       </output>
     </operation>
+  </binding>
+  <service name="inputFloatService">
+    <port name="inputFloatPort" binding="tns:inputFloatBinding">
+      <soap:address location="localhost"/>
+    </port>
+  </service>
+  <message name="inputFloatIn">
+    <part name="input" type="xsd:float"/>
+  </message>
+  <portType name="inputDecimalPort">
+    <operation name="inputDecimal">
+      <input message="tns:inputDecimalIn"/>
+    </operation>
+  </portType>
+  <binding name="inputDecimalBinding" type="tns:inputDecimalPort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputDecimal">
       <soap:operation soapAction="localhost#inputDecimal"/>
       <input>
@@ -87,6 +151,22 @@
         <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
       </output>
     </operation>
+  </binding>
+  <service name="inputDecimalService">
+    <port name="inputDecimalPort" binding="tns:inputDecimalBinding">
+      <soap:address location="localhost"/>
+    </port>
+  </service>
+  <message name="inputDecimalIn">
+    <part name="input" type="xsd:decimal"/>
+  </message>
+  <portType name="inputTimePort">
+    <operation name="inputTime">
+      <input message="tns:inputTimeIn"/>
+    </operation>
+  </portType>
+  <binding name="inputTimeBinding" type="tns:inputTimePort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputTime">
       <soap:operation soapAction="localhost#inputTime"/>
       <input>
@@ -97,31 +177,11 @@
       </output>
     </operation>
   </binding>
-  <service name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputWithScalarsService">
-    <port name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputWithScalarsPort" binding="tns:PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputWithScalarsBinding">
+  <service name="inputTimeService">
+    <port name="inputTimePort" binding="tns:inputTimeBinding">
       <soap:address location="localhost"/>
     </port>
   </service>
-  <message name="inputStringIn">
-    <part name="input" type="xsd:string"/>
-  </message>
-  <message name="inputBooleanIn">
-    <part name="input1" type="xsd:boolean"/>
-    <part name="input2" type="xsd:boolean"/>
-  </message>
-  <message name="inputIntegerIn">
-    <part name="input1" type="xsd:int"/>
-    <part name="input2" type="xsd:int"/>
-  </message>
-  <message name="inputDoubleIn">
-    <part name="input" type="xsd:float"/>
-  </message>
-  <message name="inputFloatIn">
-    <part name="input" type="xsd:float"/>
-  </message>
-  <message name="inputDecimalIn">
-    <part name="input" type="xsd:decimal"/>
-  </message>
   <message name="inputTimeIn">
     <part name="input1" type="xsd:time"/>
     <part name="input2" type="xsd:date"/>

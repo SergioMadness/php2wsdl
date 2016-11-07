@@ -25,9 +25,10 @@ class TestSimpleClassWithoutSoapTagAnnotations
     /**
      * Adds two numbers.
      *
-     * @param float $p1
-     * @param float $p2
-     * @return float
+     * @soap
+     * @soapParam float $p1
+     * @soapParam float $p2
+     * @soapReturn float
      */
     protected function add($p1, $p2)
     {
@@ -37,9 +38,10 @@ class TestSimpleClassWithoutSoapTagAnnotations
     /**
      * Make array.
      *
-     * @param mixed $el1
-     * @param mixed $el2
-     * @return array
+     * @soap
+     * @soapParam mixed $el1
+     * @soapParam mixed $el2
+     * @soapReturn array
      */
     public function makeArray($el1, $el2)
     {

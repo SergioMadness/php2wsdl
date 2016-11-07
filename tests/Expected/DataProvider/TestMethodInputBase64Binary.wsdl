@@ -1,19 +1,16 @@
 <?xml version="1.0"?>
-<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="localhost" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputBase64Binary" targetNamespace="localhost">
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="localhost" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="test" targetNamespace="localhost">
   <types>
     <xsd:schema targetNamespace="localhost">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
     </xsd:schema>
   </types>
-  <portType name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputBase64BinaryPort">
+  <portType name="inputBase64BinaryPort">
     <operation name="inputBase64Binary">
       <input message="tns:inputBase64BinaryIn"/>
     </operation>
-    <operation name="inputBase64BinaryArray">
-      <input message="tns:inputBase64BinaryArrayIn"/>
-    </operation>
   </portType>
-  <binding name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputBase64BinaryBinding" type="tns:PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputBase64BinaryPort">
+  <binding name="inputBase64BinaryBinding" type="tns:inputBase64BinaryPort">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputBase64Binary">
       <soap:operation soapAction="localhost#inputBase64Binary"/>
@@ -24,6 +21,22 @@
         <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
       </output>
     </operation>
+  </binding>
+  <service name="inputBase64BinaryService">
+    <port name="inputBase64BinaryPort" binding="tns:inputBase64BinaryBinding">
+      <soap:address location="localhost"/>
+    </port>
+  </service>
+  <message name="inputBase64BinaryIn">
+    <part name="base64binary" type="xsd:base64Binary"/>
+  </message>
+  <portType name="inputBase64BinaryArrayPort">
+    <operation name="inputBase64BinaryArray">
+      <input message="tns:inputBase64BinaryArrayIn"/>
+    </operation>
+  </portType>
+  <binding name="inputBase64BinaryArrayBinding" type="tns:inputBase64BinaryArrayPort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputBase64BinaryArray">
       <soap:operation soapAction="localhost#inputBase64BinaryArray"/>
       <input>
@@ -34,14 +47,11 @@
       </output>
     </operation>
   </binding>
-  <service name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputBase64BinaryService">
-    <port name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputBase64BinaryPort" binding="tns:PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputBase64BinaryBinding">
+  <service name="inputBase64BinaryArrayService">
+    <port name="inputBase64BinaryArrayPort" binding="tns:inputBase64BinaryArrayBinding">
       <soap:address location="localhost"/>
     </port>
   </service>
-  <message name="inputBase64BinaryIn">
-    <part name="base64binary" type="xsd:base64Binary"/>
-  </message>
   <message name="inputBase64BinaryArrayIn">
     <part name="base64binaries" type="soap-enc:Array"/>
   </message>

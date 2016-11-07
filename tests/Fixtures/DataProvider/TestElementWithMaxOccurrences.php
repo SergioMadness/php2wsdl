@@ -2,10 +2,18 @@
 
 namespace PHP2WSDL\Test\Fixtures\DataProvider;
 
+/**
+ * Class TestElementWithMaxOccurrences
+ * @package PHP2WSDL\Test\Fixtures\DataProvider
+ *
+ * @soap
+ */
 class TestElementWithMaxOccurrences {
 
     /**
-     * @param \PHP2WSDL\Test\Stub\MaxOccurrences $object Input.
+     * @soap
+     *
+     * @soapParam \PHP2WSDL\Test\Stub\MaxOccurrences object Input.
      */
     public function inputObject($object) {
 
