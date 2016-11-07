@@ -2,45 +2,58 @@
 
 namespace PHP2WSDL\Test\Fixtures\DataProvider;
 
+/**
+ * Class TestMethodInputArrayOfScalars
+ * @package PHP2WSDL\Test\Fixtures\DataProvider
+ *
+ * @soap
+ */
 class TestMethodInputArrayOfScalars
 {
     /**
-     * @param array $array Simple array.
+     * @soap
+     *
+     * @soapParam array array Simple array.
      */
     public function inputArraySimple(array $array)
     {
     }
 
     /**
-     * @param string[] $strings Array of strings.
+     * @soap
+     * @soapParam string[] strings Array of strings.
      */
     public function inputArrayStrings(array $strings)
     {
     }
 
     /**
-     * @param int[] $ints Array of integers.
+     * @soap
+     * @soapParam int[] ints Array of integers.
      */
     public function inputArrayInt(array $ints)
     {
     }
 
     /**
-     * @param integer[] $integers Array of integers.
+     * @soap
+     * @soapParam integer[] integers Array of integers.
      */
     public function inputArrayInteger(array $integers)
     {
     }
 
     /**
-     * @param decimal[] $decimals Array of decimals.
+     * @soap
+     * @soapParam decimal[] decimals Array of decimals.
      */
     public function inputArrayDecimal(array $decimals)
     {
     }
 
     /**
-     * @param float[] $floats Array of floats.
+     * @soap
+     * @soapParam float[] floats Array of floats.
      */
     public function inputArrayFloat(array $floats)
     {

@@ -2,56 +2,69 @@
 
 namespace PHP2WSDL\Test\Fixtures\DataProvider;
 
+/**
+ * Class TestMethodInputWithScalars
+ * @package PHP2WSDL\Test\Fixtures\DataProvider
+ *
+ * @soap
+ */
 class TestMethodInputWithScalars
 {
     /**
-     * @param string $input Input.
+     * @soap
+     * @soapParam string input Input.
      */
     public function inputString($input)
     {
     }
 
     /**
-     * @param bool $input1 Input 1.
-     * @param boolean $input2 Input 2.
+     * @soap
+     * @soapParam bool input1 Input 1.
+     * @soapParam boolean input2 Input 2.
      */
     public function inputBoolean($input1, $input2)
     {
     }
 
     /**
-     * @param int $input1 Input 1.
-     * @param integer $input2 Input 2.
+     * @soap
+     * @soapParam int input1 Input 1.
+     * @soapParam integer input2 Input 2.
      */
     public function inputInteger($input1, $input2)
     {
     }
 
     /**
-     * @param double $input Input.
+     * @soap
+     * @soapParam double input Input.
      */
     public function inputDouble($input)
     {
     }
 
     /**
-     * @param float $input Input.
+     * @soap
+     * @soapParam float input Input.
      */
     public function inputFloat($input)
     {
     }
 
     /**
-     * @param decimal $input Input.
+     * @soap
+     * @soapParam decimal input Input.
      */
     public function inputDecimal($input)
     {
     }
 
     /**
-     * @param time $input1 Input 1.
-     * @param date $input2 Input 2.
-     * @param \DateTime $input3 Input 3.
+     * @soap
+     * @soapParam time input1 Input 1.
+     * @soapParam date input2 Input 2.
+     * @soapParam \DateTime input3 Input 3.
      */
     public function inputTime($input1, $input2, $input3)
     {

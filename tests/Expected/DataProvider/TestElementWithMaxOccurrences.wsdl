@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="localhost" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="PHP2WSDL.Test.Fixtures.DataProvider.TestElementWithMaxOccurrences" targetNamespace="localhost">
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="localhost" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="test" targetNamespace="localhost">
   <types>
     <xsd:schema targetNamespace="localhost">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -13,12 +13,12 @@
       </xsd:complexType>
     </xsd:schema>
   </types>
-  <portType name="PHP2WSDL.Test.Fixtures.DataProvider.TestElementWithMaxOccurrencesPort">
+  <portType name="inputObjectPort">
     <operation name="inputObject">
       <input message="tns:inputObjectIn"/>
     </operation>
   </portType>
-  <binding name="PHP2WSDL.Test.Fixtures.DataProvider.TestElementWithMaxOccurrencesBinding" type="tns:PHP2WSDL.Test.Fixtures.DataProvider.TestElementWithMaxOccurrencesPort">
+  <binding name="inputObjectBinding" type="tns:inputObjectPort">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputObject">
       <soap:operation soapAction="localhost#inputObject"/>
@@ -30,8 +30,8 @@
       </output>
     </operation>
   </binding>
-  <service name="PHP2WSDL.Test.Fixtures.DataProvider.TestElementWithMaxOccurrencesService">
-    <port name="PHP2WSDL.Test.Fixtures.DataProvider.TestElementWithMaxOccurrencesPort" binding="tns:PHP2WSDL.Test.Fixtures.DataProvider.TestElementWithMaxOccurrencesBinding">
+  <service name="inputObjectService">
+    <port name="inputObjectPort" binding="tns:inputObjectBinding">
       <soap:address location="localhost"/>
     </port>
   </service>

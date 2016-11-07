@@ -4,6 +4,8 @@ namespace PHP2WSDL\Test\Fixtures;
 
 /**
  * Example class with @soap annotation.
+ *
+ * @soap
  */
 class TestSimpleClassWithSoapTagAnnotations
 {
@@ -27,9 +29,9 @@ class TestSimpleClassWithSoapTagAnnotations
      *
      * @soap
      *
-     * @param float $p1
-     * @param float $p2
-     * @return float
+     * @soapParam float p1
+     * @soapParam float p2
+     * @soapReturn float
      */
     protected function add($p1, $p2)
     {

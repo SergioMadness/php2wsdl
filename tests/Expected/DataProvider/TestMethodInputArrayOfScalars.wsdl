@@ -1,31 +1,16 @@
 <?xml version="1.0"?>
-<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="localhost" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputArrayOfScalars" targetNamespace="localhost">
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="localhost" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="test" targetNamespace="localhost">
   <types>
     <xsd:schema targetNamespace="localhost">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
     </xsd:schema>
   </types>
-  <portType name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputArrayOfScalarsPort">
+  <portType name="inputArraySimplePort">
     <operation name="inputArraySimple">
       <input message="tns:inputArraySimpleIn"/>
     </operation>
-    <operation name="inputArrayStrings">
-      <input message="tns:inputArrayStringsIn"/>
-    </operation>
-    <operation name="inputArrayInt">
-      <input message="tns:inputArrayIntIn"/>
-    </operation>
-    <operation name="inputArrayInteger">
-      <input message="tns:inputArrayIntegerIn"/>
-    </operation>
-    <operation name="inputArrayDecimal">
-      <input message="tns:inputArrayDecimalIn"/>
-    </operation>
-    <operation name="inputArrayFloat">
-      <input message="tns:inputArrayFloatIn"/>
-    </operation>
   </portType>
-  <binding name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputArrayOfScalarsBinding" type="tns:PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputArrayOfScalarsPort">
+  <binding name="inputArraySimpleBinding" type="tns:inputArraySimplePort">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputArraySimple">
       <soap:operation soapAction="localhost#inputArraySimple"/>
@@ -36,6 +21,22 @@
         <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
       </output>
     </operation>
+  </binding>
+  <service name="inputArraySimpleService">
+    <port name="inputArraySimplePort" binding="tns:inputArraySimpleBinding">
+      <soap:address location="localhost"/>
+    </port>
+  </service>
+  <message name="inputArraySimpleIn">
+    <part name="array" type="soap-enc:Array"/>
+  </message>
+  <portType name="inputArrayStringsPort">
+    <operation name="inputArrayStrings">
+      <input message="tns:inputArrayStringsIn"/>
+    </operation>
+  </portType>
+  <binding name="inputArrayStringsBinding" type="tns:inputArrayStringsPort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputArrayStrings">
       <soap:operation soapAction="localhost#inputArrayStrings"/>
       <input>
@@ -45,6 +46,22 @@
         <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
       </output>
     </operation>
+  </binding>
+  <service name="inputArrayStringsService">
+    <port name="inputArrayStringsPort" binding="tns:inputArrayStringsBinding">
+      <soap:address location="localhost"/>
+    </port>
+  </service>
+  <message name="inputArrayStringsIn">
+    <part name="strings" type="soap-enc:Array"/>
+  </message>
+  <portType name="inputArrayIntPort">
+    <operation name="inputArrayInt">
+      <input message="tns:inputArrayIntIn"/>
+    </operation>
+  </portType>
+  <binding name="inputArrayIntBinding" type="tns:inputArrayIntPort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputArrayInt">
       <soap:operation soapAction="localhost#inputArrayInt"/>
       <input>
@@ -54,6 +71,22 @@
         <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
       </output>
     </operation>
+  </binding>
+  <service name="inputArrayIntService">
+    <port name="inputArrayIntPort" binding="tns:inputArrayIntBinding">
+      <soap:address location="localhost"/>
+    </port>
+  </service>
+  <message name="inputArrayIntIn">
+    <part name="ints" type="soap-enc:Array"/>
+  </message>
+  <portType name="inputArrayIntegerPort">
+    <operation name="inputArrayInteger">
+      <input message="tns:inputArrayIntegerIn"/>
+    </operation>
+  </portType>
+  <binding name="inputArrayIntegerBinding" type="tns:inputArrayIntegerPort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputArrayInteger">
       <soap:operation soapAction="localhost#inputArrayInteger"/>
       <input>
@@ -63,6 +96,22 @@
         <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
       </output>
     </operation>
+  </binding>
+  <service name="inputArrayIntegerService">
+    <port name="inputArrayIntegerPort" binding="tns:inputArrayIntegerBinding">
+      <soap:address location="localhost"/>
+    </port>
+  </service>
+  <message name="inputArrayIntegerIn">
+    <part name="integers" type="soap-enc:Array"/>
+  </message>
+  <portType name="inputArrayDecimalPort">
+    <operation name="inputArrayDecimal">
+      <input message="tns:inputArrayDecimalIn"/>
+    </operation>
+  </portType>
+  <binding name="inputArrayDecimalBinding" type="tns:inputArrayDecimalPort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputArrayDecimal">
       <soap:operation soapAction="localhost#inputArrayDecimal"/>
       <input>
@@ -72,6 +121,22 @@
         <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
       </output>
     </operation>
+  </binding>
+  <service name="inputArrayDecimalService">
+    <port name="inputArrayDecimalPort" binding="tns:inputArrayDecimalBinding">
+      <soap:address location="localhost"/>
+    </port>
+  </service>
+  <message name="inputArrayDecimalIn">
+    <part name="decimals" type="soap-enc:Array"/>
+  </message>
+  <portType name="inputArrayFloatPort">
+    <operation name="inputArrayFloat">
+      <input message="tns:inputArrayFloatIn"/>
+    </operation>
+  </portType>
+  <binding name="inputArrayFloatBinding" type="tns:inputArrayFloatPort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="inputArrayFloat">
       <soap:operation soapAction="localhost#inputArrayFloat"/>
       <input>
@@ -82,26 +147,11 @@
       </output>
     </operation>
   </binding>
-  <service name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputArrayOfScalarsService">
-    <port name="PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputArrayOfScalarsPort" binding="tns:PHP2WSDL.Test.Fixtures.DataProvider.TestMethodInputArrayOfScalarsBinding">
+  <service name="inputArrayFloatService">
+    <port name="inputArrayFloatPort" binding="tns:inputArrayFloatBinding">
       <soap:address location="localhost"/>
     </port>
   </service>
-  <message name="inputArraySimpleIn">
-    <part name="array" type="soap-enc:Array"/>
-  </message>
-  <message name="inputArrayStringsIn">
-    <part name="strings" type="soap-enc:Array"/>
-  </message>
-  <message name="inputArrayIntIn">
-    <part name="ints" type="soap-enc:Array"/>
-  </message>
-  <message name="inputArrayIntegerIn">
-    <part name="integers" type="soap-enc:Array"/>
-  </message>
-  <message name="inputArrayDecimalIn">
-    <part name="decimals" type="soap-enc:Array"/>
-  </message>
   <message name="inputArrayFloatIn">
     <part name="floats" type="soap-enc:Array"/>
   </message>

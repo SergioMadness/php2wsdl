@@ -74,7 +74,7 @@ class PHPClass2WSDL
      * @param mixed  $class The class name from which to generate the WSDL.
      * @param string $uri   The web service URL.
      *
-     * @throws InvalidArgumentException If the class is not valid or not an object.
+     * @param string $name
      */
     public function __construct($class, $uri, $name)
     {

@@ -1,18 +1,32 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="/path/to/stylesheet.xsl"?>
-<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="localhost" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="PHP2WSDL.Test.Fixtures.TestGenerateWSDLWithStylesheet" targetNamespace="localhost">
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="localhost" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="test" targetNamespace="localhost">
   <types>
     <xsd:schema targetNamespace="localhost">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
     </xsd:schema>
   </types>
-  <portType name="PHP2WSDL.Test.Fixtures.TestGenerateWSDLWithStylesheetPort"/>
-  <binding name="PHP2WSDL.Test.Fixtures.TestGenerateWSDLWithStylesheetBinding" type="tns:PHP2WSDL.Test.Fixtures.TestGenerateWSDLWithStylesheetPort">
+  <portType name="testMethodPort">
+    <operation name="testMethod">
+      <input message="tns:testMethodIn"/>
+    </operation>
+  </portType>
+  <binding name="testMethodBinding" type="tns:testMethodPort">
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="testMethod">
+      <soap:operation soapAction="localhost#testMethod"/>
+      <input>
+        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
+      </input>
+      <output>
+        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="localhost"/>
+      </output>
+    </operation>
   </binding>
-  <service name="PHP2WSDL.Test.Fixtures.TestGenerateWSDLWithStylesheetService">
-    <port name="PHP2WSDL.Test.Fixtures.TestGenerateWSDLWithStylesheetPort" binding="tns:PHP2WSDL.Test.Fixtures.TestGenerateWSDLWithStylesheetBinding">
+  <service name="testMethodService">
+    <port name="testMethodPort" binding="tns:testMethodBinding">
       <soap:address location="localhost"/>
     </port>
   </service>
+  <message name="testMethodIn"/>
 </definitions>
