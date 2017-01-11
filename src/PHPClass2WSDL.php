@@ -200,6 +200,7 @@ class PHPClass2WSDL
     {
         $args = [];
         $annotations = [];
+        $sequence = [];
         $methodAnnotationsCollection = $method->getReflectionDocComment()->getAnnotationsCollection();
 
         $qNameMethodName = $methodAnnotationsCollection->hasAnnotationTag('soapName') ? $methodAnnotationsCollection->getAnnotation('soapName')[0]->getDescription() : WSDL::typeToQName($method->getName());
@@ -217,14 +218,15 @@ class PHPClass2WSDL
                     }
 
                     $sequence[] = $sequenceElement;
-                    $element = ['name' => $qNameMethodName, 'sequence' => $sequence];
-                    $args['parameters'] = ['element' => $this->wsdl->addElement($element)];
                 } else {
                     $args[$paramInfo['name']] = ['type' => $this->wsdl->getXSDType($paramInfo['type'])];
                 }
             }
+            if ($this->bindingStyle['style'] === 'document') {
+                $element = ['name' => $qNameMethodName, 'sequence' => $sequence];
+                $args['parameters'] = ['element' => $this->wsdl->addElement($element)];
+            }
         }
-
         $this->wsdl->addMessage($qNameMethodName . 'In', $args);
 
         $returnType = null;

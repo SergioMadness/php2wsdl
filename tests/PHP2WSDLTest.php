@@ -79,7 +79,13 @@ class PHP2WSDLTest extends \PHPUnit_Framework_TestCase
 
     private function assertWSDLFileEqualsWSDLString($expectedFile, $actualString, $message = '')
     {
-        $expected = file_get_contents($expectedFile);
+        $expected = trim(file_get_contents($expectedFile));
+        $expected = str_replace("\n", "", $expected);
+        $expected = str_replace("\r", "", $expected);
+
+        $actualString = str_replace("\n", "", $actualString);
+        $actualString = str_replace("\r", "", $actualString);
+
         $this->assertEquals($expected, $actualString, $message);
     }
 }
