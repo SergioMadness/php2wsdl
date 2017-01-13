@@ -37,7 +37,6 @@ class WSDLWrapper
     public function __call($name, $args)
     {
         $result = call_user_func_array(self::$handlers[$name], $args);;
-        \Log::info($result);
         return $result;
     }
 }
