@@ -7,7 +7,7 @@
     "wsdl generator",
     "web services"
   ],
-  "version": "0.7",
+  "version": "0.7.1",
   "homepage": "https://github.com/SergioMadness/php2wsdl",
   "license": "MIT",
   "authors": [
